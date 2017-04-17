@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Laporan Karyawan{% endblock %}
+{% block value %}
+  <div id="repot">
+    <h1>{{menu|title}}</h1>
+    {% if variable %}
+      <table>
+        <tr>
+          <th>Report Name</th>
+          <th>Action</th>
+        </tr>
+      {% for r in variable.report %}
+        <tr>
+          <td>{{r.report_name|title}}</td>
+          <td>
+            <a href="{% url 'personalia:actionShow' variable.action_id r.id %}">
+              Download
+            </a>
+          </td>
+        </tr>
+      {% endfor %}
+      </table>
+    {% endif %}
+  </div>
+{% endblock value %}

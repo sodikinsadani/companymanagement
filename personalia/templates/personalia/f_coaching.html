@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}Input Form{% endblock %}
+{% block value %}
+  <h4>{{action.action_header|title}}</h4>
+  <h5>({{emp.person.name}} {{emp.get_grade_display}} {{emp.leader.leader_id}})</h5>
+  <hr>
+  {% if msg %}
+    <h4>----{{msg}}----</h4>
+  {% endif %}
+
+  <form action="." method="post">
+    {% for f in form %}
+      {{f.as_p}}
+    {% endfor %}
+    {% csrf_token %}
+    {% for b in button %}
+      <input type="submit" value="{{ b }}">
+    {% endfor %}
+  </form>
+  <br>
+  <h4>Data Pelatihan</h4><hr>
+  <table>
+    <tr>
+      <th>Materi Pelatihan</th>
+      <th>Tanggal Pelatihan</th>
+      <th>Keterangan</th>
+    </tr>
+  {% for c in coachHist %}
+    <tr>
+      <td>
+        {{c.course|title}}
+      </td>
+      <td>{{c.date_coaching|date:"d F Y H:i"}}</td>
+      <td>{{c.description}}</td>
+    </tr>
+  {% endfor %}
+    <tr>
+      <td colspan="2">{{variable.total|title}}</td>
+      <td>{{variable.count}}</td>
+    </tr>
+  </table>
+  <br>
+  <div id="btnExport">
+    <a href="{% url 'personalia:actionShow' action_id emp.person.id %}">
+      Export Excel
+    </a>
+  </div>
+{% endblock %}

@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Employee Data{% endblock %}
+{% block value %}
+  <div id="employee-data">
+    <h2>{{menu.menu_name}}</h2><br>
+  {% if variable %}
+    <table>
+      <tr>
+        <th>Nama Karyawan</th>
+        <th>Level</th>
+        <th>Grup</th>
+      </tr>
+    {% for p in variable.employee %}
+      <tr>
+        <td>
+          <a href="{% url 'personalia:actionShow' variable.action_id p.person_id %}">
+            {{p.person.name|upper}}
+          </a>
+        </td>
+        <td>{{p.get_grade_display}}</td>
+        <td>{{p.leader.leader_id}}</td>
+      </tr>
+    {% endfor %}
+      <tr>
+        <td colspan="2">{{variable.total|title}}</td>
+        <td>{{variable.count}}</td>
+      </tr>
+    </table>
+  {% endif %}
+  </div>
+{% endblock value %}

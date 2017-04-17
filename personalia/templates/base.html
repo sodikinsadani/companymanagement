@@ -1,0 +1,36 @@
+{% load personalia_tag %}
+{% load static %}
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>{% block title %}{% endblock %}</title>
+    <link rel="stylesheet" href="{% static "css/personalia.css" %}">
+  </head>
+  <body>
+    <header id="page_header">
+      <h1>Manajemen Personalia</h1>
+      Mempermudah anda dalam mengelola SDM perusahaan
+    </header>
+    <section id="sidebar">
+      {% list_menu %}
+    </section>
+    <section id="posts">
+      {% if menu %}
+        {% if menu.is_act_view %}
+        <p>
+          {% for a in action %}
+            <a href="{% url 'personalia:actionShow' a.id 0 %}">{{a.action_name}}||</a>
+          {% endfor %}
+          <hr>
+        </p>
+        {% endif %}
+      {% endif %}
+
+      {% block value %}{% endblock %}
+    </section>
+    <footer id="page_footer">
+      Created By Sodikin Sadani
+    </footer>
+  </body>
+</html>

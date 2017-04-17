@@ -1,0 +1,18 @@
+<ul>
+  {% for m in menu_list %}
+    {% if m.menu_type == 'g' %}
+      <li>
+        <a href="{% url 'personalia:menuShow' m.menu_id %}">{{m.menu_name|title}}</a>
+        {% for sm in menu_list %}
+            {% if sm.menu_parent == m.menu_id %}
+                <ul>
+                  <li>
+                    <a href="{% url 'personalia:menuShow' sm.menu_id %}">{{sm.menu_name|title}}</a>
+                  </li>
+                </ul>
+            {% endif %}
+        {% endfor %}
+      </li>
+    {% endif %}
+  {% endfor %}
+</ul>

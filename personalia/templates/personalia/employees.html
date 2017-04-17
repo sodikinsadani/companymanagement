@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}Employee Data{% endblock %}
+{% block value %}
+  <div id="employee-data">
+    <h2>{{menu.menu_name}}</h2><br>
+  {% if variable %}
+    <table>
+      <tr>
+        <th>Nama</th>
+        <th>Jenis Kelamin</th>
+        <th>Status Pernikahan</th>
+        <th>Level</th>
+      </tr>
+    {% for p in variable.employee %}
+      <tr>
+        <td>
+          <a href="{% url 'personalia:actionShow' variable.action_id p.person_id %}">
+            {{p.person.name|upper}}
+          </a>
+        </td>
+        <td>{{p.person.get_gender_display}}</td>
+        <td>{{p.person.get_status_display}}</td>
+        <td>{{p.get_grade_display}}</td>
+      </tr>
+    {% endfor %}
+      <tr>
+        <td colspan="3">{{variable.total|title}}</td>
+        <td>{{variable.count}}</td>
+      </tr>
+    </table>
+  {% endif %}
+  </div>
+{% endblock value %}

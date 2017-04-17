@@ -1,0 +1,28 @@
+username : company
+password : company2017##
+email    : abdimulya@gmail.com
+
+#create schema
+drop user company cascade;
+create user company identified by company2017 default tablespace users;
+grant CONNECT, DBA to company;
+
+insert into personalia_menu
+(menu_id,menu_parent,menu_type,menu_name,slug,is_active,menu_order,query_function,templatesource)
+values ('050000','000000','g','index','050000-index',1,0,'GetIndex','personalia/index.html');
+insert into personalia_menu
+(menu_id,menu_parent,menu_type,menu_name,slug,is_active,menu_order,query_function,templatesource)
+values ('100000','000000','g','manajemen karyawan','100000-manajemen-karyawan',1,1,'GetIndex','personalia/index.html');
+insert into personalia_menu
+(menu_id,menu_parent,menu_type,menu_name,slug,is_active,menu_order,query_function,templatesource)
+values ('150000','000000','g','manajemen leader','150000-manajemen-leader',0,3,'GetIndex','personalia/index.html');
+insert into personalia_menu
+(menu_id,menu_parent,menu_type,menu_name,slug,is_active,menu_order,query_function,templatesource)
+values ('100500','100000','p','data karyawan','100500-data-karyawan',1,0,'GetEmloyees','personalia/employees.html');
+insert into personalia_menu
+(menu_id,menu_parent,menu_type,menu_name,slug,is_active,menu_order,query_function,templatesource)
+values ('150500','150000','p','data leader','150500-data-leader',0,0,'GetLeader','personalia/leader.html');
+
+insert into personalia_action
+(id,action_name,slug,is_enable,action_order,templatesource,query_function,menu_id_id)
+values(1,'+New','100500-new',1,0,'personalia/form.html','newEmp','100500');
