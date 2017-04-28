@@ -77,8 +77,8 @@ class Person(models.Model):
     graduate = models.CharField(max_length=3,
         choices=GRADUATE_CHOICE,default='1')
     mobilephone = models.CharField(max_length=15)
-    bbm = models.CharField(max_length=8)
-    email = models.EmailField(max_length=50)
+    bbm = models.CharField(max_length=8,blank=True,null=True)
+    email = models.EmailField(max_length=50,blank=True,null=True)
 
     class Meta:
         ordering = ('gender','name','birth',)
@@ -88,14 +88,20 @@ class Person(models.Model):
         return '{}-{}'.format(str(self.id),self.name)
 
 class Leader(models.Model):
+    MANAGER_CHOICES = [
+        ('ahm','ahmad'),('ksm','kusmawan'),('mgd','migud'),
+        ('sdk','sodikin'),('sdr','sodirun'),
+    ]
+
     leader_id = models.CharField(max_length=5,primary_key=True,)
     name = models.CharField(max_length=50)
+    manager = models.CharField(max_length=5,choices=MANAGER_CHOICES)
 
     class Meta:
-        ordering = ('leader_id',)
+        ordering = ('manager','leader_id',)
 
     def __str__(self):
-        return self.leader_id
+        return self.name
 
 class EmployeeReport(models.Manager):
     def Emp(self,condition):
@@ -116,14 +122,12 @@ class EmployeeReport(models.Manager):
 
 class Employee(models.Model):
     LEVEL_CHOICES = [
-        ('0','Kandidat'),
-        ('1','Pra A1'),
-        ('2','A1'),
-        ('3','A2'),
+        ('0','WB'),('1','Pra A1'),('2','A1_1'),('3','A1_2'),('4','A1_3'),('5','A2_a'),
+        ('6','A2_b'),
     ]
 
     SA_CHOICES = [
-        ('a','Active'),('p','Passive'),
+        ('ak','AK'),('pa','PA'),('bk1','BK_1'),('bk2','BK_2'),('bk3','BK_3')
     ]
     person = models.OneToOneField(
         Person,
@@ -131,10 +135,9 @@ class Employee(models.Model):
         primary_key=True,
     )
     grade = models.CharField(max_length=1,
-        choices=LEVEL_CHOICES, default='1')
+        choices=LEVEL_CHOICES)
     date_register = models.DateField(blank=True,null=True)
-    status_active = models.CharField(max_length=1,choices=SA_CHOICES,
-        default='a')
+    status_active = models.CharField(max_length=5,choices=SA_CHOICES)
     leader = models.ForeignKey(Leader, related_name='LeaderOf')
     description = models.TextField(max_length=500,blank=True,null=True)
 

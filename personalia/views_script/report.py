@@ -1,10 +1,11 @@
 from ..models import Report
 from django.db import transaction,IntegrityError
 from django.shortcuts import get_object_or_404
-from personalia.script import EmpReport
+from personalia.script import EmpReport,perMonRep
 
 scriptAct = {
     'empProgress' : EmpReport.ConstructReport,
+    'perMonRep' : perMonRep.ConstructReport,
 }
 
 def GetEmpReport():

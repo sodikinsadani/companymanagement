@@ -13,7 +13,7 @@ class menuAdmin(admin.ModelAdmin):
     prepopulated_fields = {'slug':('menu_id','menu_name')}
 
 class leaderAdmin(admin.ModelAdmin):
-    list_display = ('leader_id','name',)
+    list_display = ('leader_id','name','manager')
 
 class employeeAdmin(admin.ModelAdmin):
     list_display = ('person','grade','date_register','status_active','leader','description')
