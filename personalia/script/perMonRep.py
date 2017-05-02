@@ -9,19 +9,36 @@ def GetEmpProg():
     from django.db import connection as con
     with con.cursor() as cursor:
         cursor.execute('''
-            select l.manager,l.name,e.status_active,e.grade,
-            p.gender,count(e.person_id) as total
-            from
-            personalia_employee e
-            inner join personalia_leader l on l.leader_id = e.leader_id
-            inner join personalia_person p on p.id = e.person_id
-            group by l.manager,l.name,e.status_active,e.grade,p.gender
-            order by l.manager,l.name,e.status_active,e.grade,
-            p.gender
+            select l.manager,l.leader_id,l.name,p1,p2,p3,p4,p5,p6
+                ,a1,a2,a3,a4,a5,a6,bk1,bk2,bk3
+            from personalia_leader l
+            left join (
+                select
+                      leader_id,count(decode(grade,1,'1')) as p1,count(decode(grade,2,'2')) as p2,count(decode(grade,3,'3')) as p3,
+                      count(decode(grade,4,'4')) as p4,count(decode(grade,5,'5')) as p5,count(decode(grade,6,'6')) as p6
+                      from personalia_employee
+                      where status_active = 'pa'
+                      group by leader_id
+            ) pa on pa.leader_id = l.leader_id
+            left join (
+                select
+                      leader_id,count(decode(grade,1,'1')) as a1,count(decode(grade,2,'2')) as a2,count(decode(grade,3,'3')) as a3,
+                      count(decode(grade,4,'4')) as a4,count(decode(grade,5,'5')) as a5,count(decode(grade,6,'6')) as a6
+                      from personalia_employee
+                      where status_active = 'ak'
+                      group by leader_id
+            ) ak on ak.leader_id = l.leader_id
+            left join (
+                select
+                      leader_id,count(decode(status_active,'bk1','bk1')) as bk1,count(decode(status_active,'bk2','bk2')) as bk2,
+                      count(decode(status_active,'bk3','bk3')) as bk3
+                      from personalia_employee
+                      where status_active in ('bk1','bk2','bk3')
+                      group by leader_id
+            ) bk on bk.leader_id = l.leader_id
+            order by l.manager,l.name
         ''')
-        result_list = []
-        for row in cursor.fetchall():
-            result_list.append(row)
+        result_list = cursor.fetchall()
     return result_list
 
 def ConstructReport(response,params):
@@ -30,17 +47,13 @@ def ConstructReport(response,params):
     wb = load_workbook(filename = file)
 
     result_list = GetEmpProg()
-    '''rows = 1
-    rows += 1;ws.cell(row=rows,column=1,value=report_name.upper())
-    date_now = dt.today()
-    date_now = date_now.strftime("%d %B %Y")
-    rows += 1;ws.cell(row=rows,column=1,value=date_now)
-    rows += 2'''
 
     sDict = {
     'ahm':('ahmad',),'ksm':('kusmawan',),'mgd':('migud',),
     'sdk':('sodikin',),'sdr':('sodirun',)
     }
+
+
     manager = ''
     for r in result_list:
         ft = Font(color=colors.RED)
@@ -52,29 +65,18 @@ def ConstructReport(response,params):
             rows = 7
             no = 0
 
+            ws.cell(row=2,column=1,value=report_name.upper())
+            date_now = dt.today()
+            date_now = date_now.strftime("%d %B %Y")
+            ws.cell(row=3,column=1,value=date_now)
+
         no += 1
         col = 0
         rows += 1
         col += 1;ws.cell(row=rows,column=col,value=no).alignment = ac
-        col += 1;ws.cell(row=rows,column=col,value=r[1].upper())
-        if r[2] == 'pa':
-            valin = (0,0,0,0,0,0)
-        col += 1;ws.cell(row=rows,column=col,value=valin[0] or 0)
-        col += 1;ws.cell(row=rows,column=col,value=valin[0] or 0)
-        col += 1;ws.cell(row=rows,column=col,value=valin[0] or 0)
-        col += 1;ws.cell(row=rows,column=col,value=valin[0] or 0)
-        col += 1;ws.cell(row=rows,column=col,value=valin[0] or 0)
-        col += 1;ws.cell(row=rows,column=col,value=valin[0] or 0)
-        '''col += 1;ws.cell(row=rows,column=col,value=emp.person.school.title())
-        col += 1;ws.cell(row=rows,column=col,value=emp.person.get_graduate_display()).alignment = ac
-        col += 1;ws.cell(row=rows,column=col,value=emp.person.mobilephone)
-        col += 1;ws.cell(row=rows,column=col,value=emp.person.bbm.upper())
-        col += 1;ws.cell(row=rows,column=col,value=emp.person.email.lower())
-        col += 1;ws.cell(row=rows,column=col,value=emp.get_grade_display()).alignment = ac
-        col += 1;ws.cell(row=rows,column=col,value=emp.date_register).number_format = 'dd mmm yyy'
-        col += 1;ws.cell(row=rows,column=col,value=emp.get_status_active_display()).alignment = ac
-        col += 1;ws.cell(row=rows,column=col,value=emp.leader.leader_id).alignment = ac
-        col += 1;ws.cell(row=rows,column=col,value=emp.description)'''
+        col += 1;ws.cell(row=rows,column=col,value=r[2].upper())
+        for c in range(3,18):
+            col += 1;ws.cell(row=rows,column=col,value=r[c] or 0).alignment = ac
 
     wb.save(response)
     return response

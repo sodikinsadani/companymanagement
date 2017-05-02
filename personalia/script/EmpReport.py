@@ -43,14 +43,17 @@ def ConstructReport(response,params):
         col += 1;ws.cell(row=rows,column=col,value=emp.get_grade_display()).alignment = ac
         col += 1;ws.cell(row=rows,column=col,value=emp.date_register).number_format = 'dd mmm yyy'
         col += 1;ws.cell(row=rows,column=col,value=emp.get_status_active_display()).alignment = ac
-        col += 1;ws.cell(row=rows,column=col,value=emp.leader.leader_id).alignment = ac
+        col += 1;ws.cell(row=rows,column=col,value=emp.leader.name.title()).alignment = ac
         col += 1;ws.cell(row=rows,column=col,value=emp.description)
 
     edict = {
-        '0':{'0':'Candidate','L':0,'P':0},
+        '0':{'0':'WB','L':0,'P':0},
         '1':{'1':'Pra A1','L':0,'P':0},
-        '2':{'2':'A1','L':0,'P':0},
-        '3':{'3':'A2','L':0,'P':0},
+        '2':{'2':'A1_1','L':0,'P':0},
+        '3':{'3':'A1_2','L':0,'P':0},
+        '4':{'4':'A1_3','L':0,'P':0},
+        '5':{'5':'A2_A','L':0,'P':0},
+        '6':{'6':'A2_B','L':0,'P':0},
     }
     erall = Employee.emp_report.Emp("'a' = 'a'")
     for e in erall:

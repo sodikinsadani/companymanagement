@@ -1,11 +1,11 @@
-username : company
+username : company_prod
 password : company2017##
 email    : abdimulya@gmail.com
 
 #create schema
-drop user company cascade;
-create user company identified by company2017 default tablespace users;
-grant CONNECT, DBA to company;
+drop user company_prod cascade;
+create user company_prod identified by company2017 default tablespace users;
+grant CONNECT, DBA to company_prod;
 
 insert into personalia_menu
 (menu_id,menu_parent,menu_type,menu_name,slug,is_active,menu_order,query_function,templatesource)
