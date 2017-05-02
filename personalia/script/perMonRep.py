@@ -14,25 +14,55 @@ def GetEmpProg():
             from personalia_leader l
             left join (
                 select
-                      leader_id,count(decode(grade,1,'1')) as p1,count(decode(grade,2,'2')) as p2,count(decode(grade,3,'3')) as p3,
-                      count(decode(grade,4,'4')) as p4,count(decode(grade,5,'5')) as p5,count(decode(grade,6,'6')) as p6
-                      from personalia_employee
+                      leader_id
+                      ,count(decode(e.grade,1,decode(p.gender,'L','1')))||'/'||count(decode(e.grade,1,
+                      decode(p.gender,'P','1')))||'/'||count(decode(e.grade,1,'1')) as p1
+                      ,count(decode(e.grade,2,decode(p.gender,'L','2')))||'/'||count(decode(e.grade,2,
+                      decode(p.gender,'P','2')))||'/'||count(decode(e.grade,2,'2')) as p2
+                      ,count(decode(e.grade,3,decode(p.gender,'L','3')))||'/'||count(decode(e.grade,3,
+                      decode(p.gender,'P','3')))||'/'||count(decode(e.grade,3,'3')) as p3
+                      ,count(decode(e.grade,4,decode(p.gender,'L','4')))||'/'||count(decode(e.grade,4,
+                      decode(p.gender,'P','4')))||'/'||count(decode(e.grade,4,'4')) as p4
+                      ,count(decode(e.grade,5,decode(p.gender,'L','5')))||'/'||count(decode(e.grade,5,
+                      decode(p.gender,'P','5')))||'/'||count(decode(e.grade,5,'5')) as p5
+                      ,count(decode(e.grade,6,decode(p.gender,'L','6')))||'/'||count(decode(e.grade,6,
+                      decode(p.gender,'P','6')))||'/'||count(decode(e.grade,6,'6')) as p6
+                      from personalia_employee e
+                      inner join personalia_person p on p.id = e.person_id
                       where status_active = 'pa'
                       group by leader_id
             ) pa on pa.leader_id = l.leader_id
             left join (
                 select
-                      leader_id,count(decode(grade,1,'1')) as a1,count(decode(grade,2,'2')) as a2,count(decode(grade,3,'3')) as a3,
-                      count(decode(grade,4,'4')) as a4,count(decode(grade,5,'5')) as a5,count(decode(grade,6,'6')) as a6
-                      from personalia_employee
+                      leader_id
+                      ,count(decode(e.grade,1,decode(p.gender,'L','1')))||'/'||count(decode(e.grade,1,
+                      decode(p.gender,'P','1')))||'/'||count(decode(e.grade,1,'1')) as a1
+                      ,count(decode(e.grade,2,decode(p.gender,'L','2')))||'/'||count(decode(e.grade,2,
+                      decode(p.gender,'P','2')))||'/'||count(decode(e.grade,2,'2')) as a2
+                      ,count(decode(e.grade,3,decode(p.gender,'L','3')))||'/'||count(decode(e.grade,3,
+                      decode(p.gender,'P','3')))||'/'||count(decode(e.grade,3,'3')) as a3
+                      ,count(decode(e.grade,4,decode(p.gender,'L','4')))||'/'||count(decode(e.grade,4,
+                      decode(p.gender,'P','4')))||'/'||count(decode(e.grade,4,'4')) as a4
+                      ,count(decode(e.grade,5,decode(p.gender,'L','5')))||'/'||count(decode(e.grade,5,
+                      decode(p.gender,'P','5')))||'/'||count(decode(e.grade,5,'5')) as a5
+                      ,count(decode(e.grade,6,decode(p.gender,'L','6')))||'/'||count(decode(e.grade,6,
+                      decode(p.gender,'P','6')))||'/'||count(decode(e.grade,6,'6')) as a6
+                      from personalia_employee e
+                      inner join personalia_person p on p.id = e.person_id
                       where status_active = 'ak'
                       group by leader_id
             ) ak on ak.leader_id = l.leader_id
             left join (
                 select
-                      leader_id,count(decode(status_active,'bk1','bk1')) as bk1,count(decode(status_active,'bk2','bk2')) as bk2,
-                      count(decode(status_active,'bk3','bk3')) as bk3
-                      from personalia_employee
+                      leader_id
+                      ,count(decode(e.status_active,'bk1',decode(p.gender,'L','bk1')))||'/'||count(decode(e.status_active,'bk1',
+                      decode(p.gender,'P','bk1')))||'/'||count(decode(e.status_active,'bk1','bk1')) as bk1
+                      ,count(decode(e.status_active,'bk2',decode(p.gender,'L','bk2')))||'/'||count(decode(e.status_active,'bk2',
+                      decode(p.gender,'P','bk2')))||'/'||count(decode(e.status_active,'bk2','bk2')) as bk2
+                      ,count(decode(e.status_active,'bk3',decode(p.gender,'L','bk3')))||'/'||count(decode(e.status_active,'bk3',
+                      decode(p.gender,'P','bk3')))||'/'||count(decode(e.status_active,'bk3','bk3')) as bk3
+                      from personalia_employee e
+                      inner join personalia_person p on p.id = e.person_id
                       where status_active in ('bk1','bk2','bk3')
                       group by leader_id
             ) bk on bk.leader_id = l.leader_id
@@ -76,7 +106,7 @@ def ConstructReport(response,params):
         col += 1;ws.cell(row=rows,column=col,value=no).alignment = ac
         col += 1;ws.cell(row=rows,column=col,value=r[2].upper())
         for c in range(3,18):
-            col += 1;ws.cell(row=rows,column=col,value=r[c] or 0).alignment = ac
+            col += 1;ws.cell(row=rows,column=col,value=r[c] or '0/0/0').alignment = ac
 
     wb.save(response)
     return response
