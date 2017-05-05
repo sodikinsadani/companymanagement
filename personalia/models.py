@@ -66,17 +66,15 @@ class Person(models.Model):
     ]
 
     name = models.CharField(max_length=50)
-    birthplace = models.CharField(max_length=15)
-    birth = models.DateField()#(help_text='format is mm/dd/yyyy exmp:02/28/2000')
-    gender = models.CharField(max_length=1,choices=GENDER_CHOICES,
-        default='L')
-    address = models.TextField(max_length=200)
-    status = models.CharField(max_length=1,choices=STATUS_CHOICES,
-        default='1')
-    school = models.CharField(max_length=50)
+    birthplace = models.CharField(max_length=15,blank=True,null=True)
+    birth = models.DateField(blank=True,null=True)#(help_text='format is mm/dd/yyyy exmp:02/28/2000')
+    gender = models.CharField(max_length=1,choices=GENDER_CHOICES)
+    address = models.TextField(max_length=200,blank=True,null=True)
+    status = models.CharField(max_length=1,choices=STATUS_CHOICES,blank=True,null=True)
+    school = models.CharField(max_length=50,blank=True,null=True)
     graduate = models.CharField(max_length=3,
-        choices=GRADUATE_CHOICE,default='1')
-    mobilephone = models.CharField(max_length=15)
+        choices=GRADUATE_CHOICE,blank=True,null=True)
+    mobilephone = models.CharField(max_length=15,blank=True,null=True)
     bbm = models.CharField(max_length=8,blank=True,null=True)
     email = models.EmailField(max_length=50,blank=True,null=True)
 
@@ -85,7 +83,8 @@ class Person(models.Model):
         unique_together = ('name','birth','gender','email',)
 
     def __str__(self): # __unicode__ on Python 2
-        return '{}-{}'.format(str(self.id),self.name)
+        #return '{}-{}'.format(str(self.id),self.name)
+        return '{} {}'.format(str(self.id),self.name)
 
 class Leader(models.Model):
     MANAGER_CHOICES = [
@@ -140,6 +139,7 @@ class Employee(models.Model):
     status_active = models.CharField(max_length=5,choices=SA_CHOICES)
     leader = models.ForeignKey(Leader, related_name='LeaderOf')
     description = models.TextField(max_length=500,blank=True,null=True)
+    date_input = models.DateTimeField(default=timezone.now)
 
     objects = models.Manager()
     emp_report = EmployeeReport()

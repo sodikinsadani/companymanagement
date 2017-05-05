@@ -1,0 +1,33 @@
+{% extends "base_training.html" %}
+{% block title %}Entrant Data{% endblock %}
+{% block value %}
+  <div id="employee-data">
+    <h2>{{menu.menu_name}}</h2><br>
+  {% if variable %}
+    <table>
+      <tr>
+        <th>Nama Peserta</th>
+        <th>Jenis Kelamin</th>
+        <th>Level</th>
+        <th>Leader</th>
+      </tr>
+    {% for e in variable.entrant %}
+      <tr>
+        <td>
+          <a href="{% url 'training:actionShow' variable.action_id e.member_id %}">
+            {{e.member.person.name|upper}}
+          </a>
+        </td>
+        <td>{{e.member.person.get_gender_display}}</td>
+        <td>{{e.member.get_grade_display}}</td>
+        <td>{{e.member.leader.name}}</td>
+      </tr>
+    {% endfor %}
+      <tr>
+        <td colspan="3">{{variable.total|title}}</td>
+        <td>{{variable.count}}</td>
+      </tr>
+    </table>
+  {% endif %}
+  </div>
+{% endblock value %}

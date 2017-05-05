@@ -1,0 +1,19 @@
+{% extends "base_training.html" %}
+{% block title %}Input Form{% endblock %}
+{% block value %}
+  <h4>{{action.action_header|title}}</h4>
+  <hr>
+  {% if msg %}
+    <h4>----{{msg}}----</h4>
+  {% endif %}
+
+  <form action="." method="post">
+    {% for f in form %}
+      {{f.as_p}}
+    {% endfor %}
+    {% csrf_token %}
+    {% for b in button %}
+      <input type="submit" value="{{ b }}">
+    {% endfor %}
+  </form>
+{% endblock %}

@@ -16,7 +16,7 @@ class leaderAdmin(admin.ModelAdmin):
     list_display = ('leader_id','name','manager')
 
 class employeeAdmin(admin.ModelAdmin):
-    list_display = ('person','grade','date_register','status_active','leader','description')
+    list_display = ('person','grade','date_register','status_active','leader','description','date_input')
 
 class personAdmin(admin.ModelAdmin):
     list_display = ('name','birthplace','birth','gender','address',

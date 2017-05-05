@@ -8,7 +8,7 @@ class DateInput(forms.DateInput):
 class fEmployee(forms.ModelForm):
     class Meta:
         model = Employee
-        exclude = ['person']
+        exclude = ['person','date_input',]
         widgets = {
             'date_register':DateInput(),
         }
