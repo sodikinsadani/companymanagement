@@ -1,7 +1,8 @@
-from ..models import Person,Action,Employee
-from ..forms import fEmployee,fPerson
+from ..models import Person,Action,Employee,Leader
+from ..forms import fEmployee,fPerson,fUplEmp
 from django.db import transaction,IntegrityError
 from django.shortcuts import get_object_or_404
+from openpyxl import load_workbook
 
 def GetEmloyees():
     employee = Employee.objects.all()
@@ -55,7 +56,51 @@ def newEmp(request,params):
     }
     return context
 
-actChoice = {'+New':newEmp,'edit':editEmp}
+def handle_upload_file(f):
+    wb = load_workbook(f)
+    ws = wb['data']
+    try:
+        #with transaction.atomic():
+        rows = 5
+        total_data = 0
+        maxrows = ws.max_row
+        for d in range(rows,maxrows):
+            #raise Exception, ws.cell(row=7,column=2).value
+            rows += 1;
+            name = ws.cell(row=rows,column=2).value
+            gender = ws.cell(row=rows,column=5).value
+            grade = ws.cell(row=rows,column=13).value
+            status_active = ws.cell(row=rows,column=15).value
+            leader = ws.cell(row=rows,column=16).value
+            leader = Leader.objects.get(pk=leader)
+            #raise Exception,gender
+            p = Person(name=name,gender=gender)
+            p.save()
+            employee = Employee(person=p,grade=grade,status_active=status_active,
+            leader=leader)
+            employee.save()
+
+            total_data += 1
+        msg = 'Berhasil mengupload %s data karyawan' % total_data
+    except IntegrityError:
+        msg = 'Gagal mengupload data karyawan'
+    return msg
+
+
+def uplEmp(request,params):
+    msg = {}
+    form = (fUplEmp(),)
+    if request.method == 'POST':
+        cekformUp = fUplEmp(request.POST, request.FILES)
+        if cekformUp.is_valid():
+            msg = handle_upload_file(request.FILES['file_upload'])
+    context = {
+        'msg':msg,'form':form,'button':('Upload',),'action':params['action'],
+    }
+    return context
+
+
+actChoice = {'+New':newEmp,'edit':editEmp,'upload':uplEmp}
 def GetContext(request,params):
     action_name = params['action'].action_name
     context = actChoice[action_name](request,params)

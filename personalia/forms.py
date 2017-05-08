@@ -50,3 +50,6 @@ class fCoaching(forms.ModelForm):
             'date_coaching':_('Tanggal Pelatihan'),
             'description':_('Keterangan'),
         }
+
+class fUplEmp(forms.Form):
+    file_upload = forms.FileField()

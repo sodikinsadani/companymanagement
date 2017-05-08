@@ -12,6 +12,7 @@ query = {
     'GetEmloyees':employees.GetEmloyees,
     'newEmp':employees,
     'editEmp':employees,
+    'uplEmp':employees,
     'GetLeader':leader.GetLeader,
     'GetReport':report.GetEmpReport,
     'GetEmpReport':report,
