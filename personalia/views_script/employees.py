@@ -1,4 +1,4 @@
-from ..models import Person,Action,Employee,Leader
+from ..models import Person,Action,Employee,Leader,ErrorUpload
 from ..forms import fEmployee,fPerson,fUplEmp
 from django.db import transaction,IntegrityError
 from django.shortcuts import get_object_or_404
@@ -59,31 +59,44 @@ def newEmp(request,params):
 def handle_upload_file(f):
     wb = load_workbook(f)
     ws = wb['data']
-    try:
-        #with transaction.atomic():
-        rows = 5
-        total_data = 0
-        maxrows = ws.max_row
-        for d in range(rows,maxrows):
-            #raise Exception, ws.cell(row=7,column=2).value
-            rows += 1;
-            name = ws.cell(row=rows,column=2).value
-            gender = ws.cell(row=rows,column=5).value
-            grade = ws.cell(row=rows,column=13).value
-            status_active = ws.cell(row=rows,column=15).value
-            leader = ws.cell(row=rows,column=16).value
-            leader = Leader.objects.get(pk=leader)
-            #raise Exception,gender
+
+    rows = 5
+    total_data = 0
+    error_data = 0
+    maxrows = ws.max_row
+    for d in range(rows,maxrows):
+        rows += 1;
+        name = ws.cell(row=rows,column=2).value
+        gender = ws.cell(row=rows,column=5).value
+        grade = ws.cell(row=rows,column=13).value
+        status_active = ws.cell(row=rows,column=15).value
+        leader = ws.cell(row=rows,column=16).value
+        leader = Leader.objects.get(pk=leader)
+
+        birthplace = ws.cell(row=rows,column=3).value
+        birth = ws.cell(row=rows,column=4).value
+        address = ws.cell(row=rows,column=6).value
+        status = ws.cell(row=rows,column=7).value
+        school = ws.cell(row=rows,column=8).value
+        graduate = ws.cell(row=rows,column=9).value
+        mobilephone = ws.cell(row=rows,column=10).value
+        bbm = ws.cell(row=rows,column=11).value
+        email = ws.cell(row=rows,column=12).value
+        date_register = ws.cell(row=rows,column=14).value
+        description = ws.cell(row=rows,column=17).value
+
+        try:
             p = Person(name=name,gender=gender)
             p.save()
             employee = Employee(person=p,grade=grade,status_active=status_active,
             leader=leader)
             employee.save()
-
             total_data += 1
-        msg = 'Berhasil mengupload %s data karyawan' % total_data
-    except IntegrityError:
-        msg = 'Gagal mengupload data karyawan'
+        except IntegrityError:
+            errorupload = ErrorUpload(name=name)
+            errorupload.save()
+            error_data += 1
+    msg = '%s data valid, %s data invalid' % (total_data, error_data)
     return msg
 
 

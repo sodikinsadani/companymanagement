@@ -9,12 +9,14 @@ def GetEmpProg():
     from django.db import connection as con
     with con.cursor() as cursor:
         cursor.execute('''
-            select l.manager,l.leader_id,l.name,p1,p2,p3,p4,p5,p6
-                ,a1,a2,a3,a4,a5,a6,bk1,bk2,bk3
+            select l.manager,l.leader_id,l.name,p0,p1,p2,p3,p4,p5,p6
+                ,a0,a1,a2,a3,a4,a5,a6,bk1,bk2,bk3
             from personalia_leader l
             left join (
                 select
                       leader_id
+                      ,count(decode(e.grade,0,decode(p.gender,'L','0')))||'/'||count(decode(e.grade,0,
+                      decode(p.gender,'P','0')))||'/'||count(decode(e.grade,0,'0')) as p0
                       ,count(decode(e.grade,1,decode(p.gender,'L','1')))||'/'||count(decode(e.grade,1,
                       decode(p.gender,'P','1')))||'/'||count(decode(e.grade,1,'1')) as p1
                       ,count(decode(e.grade,2,decode(p.gender,'L','2')))||'/'||count(decode(e.grade,2,
@@ -35,6 +37,8 @@ def GetEmpProg():
             left join (
                 select
                       leader_id
+                      ,count(decode(e.grade,0,decode(p.gender,'L','0')))||'/'||count(decode(e.grade,0,
+                      decode(p.gender,'P','0')))||'/'||count(decode(e.grade,0,'0')) as a0
                       ,count(decode(e.grade,1,decode(p.gender,'L','1')))||'/'||count(decode(e.grade,1,
                       decode(p.gender,'P','1')))||'/'||count(decode(e.grade,1,'1')) as a1
                       ,count(decode(e.grade,2,decode(p.gender,'L','2')))||'/'||count(decode(e.grade,2,
@@ -105,7 +109,8 @@ def ConstructReport(response,params):
         rows += 1
         col += 1;ws.cell(row=rows,column=col,value=no).alignment = ac
         col += 1;ws.cell(row=rows,column=col,value=r[2].upper())
-        for c in range(3,18):
+
+        for c in range(3,20):
             col += 1;ws.cell(row=rows,column=col,value=r[c] or '0/0/0').alignment = ac
 
     wb.save(response)

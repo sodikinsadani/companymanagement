@@ -80,7 +80,7 @@ class Person(models.Model):
 
     class Meta:
         ordering = ('gender','name','birth',)
-        unique_together = ('name','birth','gender','email',)
+        #unique_together = ('name','birthplace','birth','gender','email',)
 
     def __str__(self): # __unicode__ on Python 2
         #return '{}-{}'.format(str(self.id),self.name)
@@ -167,3 +167,8 @@ class Coaching(models.Model):
 
     class Meta:
         ordering = ('id',)
+
+class ErrorUpload(models.Model):
+    name = models.CharField(max_length=50)
+    description = models.TextField(max_length=500,blank=True,null=True)
+    date_input = models.DateTimeField(default=timezone.now)
