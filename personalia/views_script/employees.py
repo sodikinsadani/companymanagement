@@ -3,6 +3,7 @@ from ..forms import fEmployee,fPerson,fUplEmp
 from django.db import transaction,IntegrityError
 from django.shortcuts import get_object_or_404
 from openpyxl import load_workbook
+import datetime
 
 def GetEmloyees():
     employee = Employee.objects.all()
@@ -56,6 +57,18 @@ def newEmp(request,params):
     }
     return context
 
+def convertDate(d):
+    try:
+        if type(d) is datetime.datetime:
+            birth = str(d).split(' ')
+            y,d,m = birth[0].split('-')
+        else:
+            birth = str(d).split(' ')
+            d,m,y = birth[0].split('/')
+        return datetime.date(int(y), int(m), int(d))
+    except:
+        return ''
+
 def handle_upload_file(f):
     wb = load_workbook(f)
     ws = wb['data']
@@ -85,11 +98,17 @@ def handle_upload_file(f):
         date_register = ws.cell(row=rows,column=14).value
         description = ws.cell(row=rows,column=17).value
 
+        if birth not in ['',None]:
+            birth = convertDate(birth)
+        if date_register not in ['',None]:
+            date_register = convertDate(date_register)
+
         try:
-            p = Person(name=name,gender=gender)
+            p = Person(name=name,gender=gender,birthplace=birthplace,address=address,status=status,
+            school=school,graduate=graduate,mobilephone=mobilephone,bbm=bbm,email=email,birth=birth)
             p.save()
             employee = Employee(person=p,grade=grade,status_active=status_active,
-            leader=leader)
+            leader=leader,description=description,date_register=date_register)
             employee.save()
             total_data += 1
         except IntegrityError:

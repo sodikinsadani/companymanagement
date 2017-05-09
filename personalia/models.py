@@ -66,7 +66,7 @@ class Person(models.Model):
     ]
 
     name = models.CharField(max_length=50)
-    birthplace = models.CharField(max_length=15,blank=True,null=True)
+    birthplace = models.CharField(max_length=50,blank=True,null=True)
     birth = models.DateField(blank=True,null=True)#(help_text='format is mm/dd/yyyy exmp:02/28/2000')
     gender = models.CharField(max_length=1,choices=GENDER_CHOICES)
     address = models.TextField(max_length=200,blank=True,null=True)
